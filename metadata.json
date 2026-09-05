@@ -1,0 +1,6 @@
+{
+  "name": "Thời Khóa Biểu Lan Vy & Kim Ánh",
+  "description": "Thời khóa biểu tuần phong cách pastel dễ thương, phân chia tiết học chi tiết từ Thứ 2 đến Chủ Nhật, hỗ trợ đổi Workspace Lan Vy - Kim Ánh, đồng bộ tiết/ngày/tuần và tạo tuần mới.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
