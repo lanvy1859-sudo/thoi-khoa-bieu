@@ -8,14 +8,16 @@ import {
   Copy,
   Filter,
 } from 'lucide-react';
-import { TimeSlot, ScheduleCell, WorkspaceId } from '../types';
+import { TimeSlot, ScheduleCell, WorkspaceId, WeekData } from '../types';
 import { DAYS_OF_WEEK, TIME_SLOTS, WORKSPACE_USERS } from '../data/scheduleConfig';
 import { ScheduleCellCard } from './ScheduleCellCard';
+import { getDayDateStr, isDateToday } from '../utils/dateUtils';
 
 interface TimetableGridProps {
   currentWorkspaceId: WorkspaceId;
   myIdentity: WorkspaceId;
   currentWeekId: string;
+  currentWeek?: WeekData;
   cells: Record<string, ScheduleCell>;
   onEditCell: (dayId: string, slotId: string, existingCell?: ScheduleCell) => void;
   onDeleteCell: (cellId: string) => void;
@@ -30,6 +32,7 @@ export const TimetableGrid: React.FC<TimetableGridProps> = ({
   currentWorkspaceId,
   myIdentity,
   currentWeekId,
+  currentWeek,
   cells,
   onEditCell,
   onDeleteCell,
@@ -133,37 +136,51 @@ export const TimetableGrid: React.FC<TimetableGridProps> = ({
             </div>
 
             {/* 7 Days Columns (Thứ Hai -> Chủ Nhật) */}
-            {DAYS_OF_WEEK.map((day) => (
-              <div
-                key={day.id}
-                className="p-3 border-r last:border-r-0 border-rose-100/80 flex flex-col items-center justify-center text-center relative hover:bg-rose-50/20 transition-colors"
-              >
-                <div className="flex items-center gap-1 font-extrabold text-xs sm:text-sm text-gray-800 tracking-tight">
-                  <span className="text-base">{day.icon}</span>
-                  <span>{day.name}</span>
-                  {day.isToday && (
-                    <span className="bg-[#E11D48] text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded-full tracking-wider uppercase ml-0.5 shadow-2xs">
-                      Hôm nay
+            {DAYS_OF_WEEK.map((day, dayIndex) => {
+              const dateStr = getDayDateStr(currentWeek?.startDate, dayIndex);
+              const isToday = isDateToday(currentWeek?.startDate, dayIndex);
+
+              return (
+                <div
+                  key={day.id}
+                  className={`p-3 border-r last:border-r-0 border-rose-100/80 flex flex-col items-center justify-center text-center relative hover:bg-rose-50/20 transition-colors ${
+                    isToday ? 'bg-rose-50/40' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-1 font-extrabold text-xs sm:text-sm text-gray-800 tracking-tight">
+                    <span className="text-base">{day.icon}</span>
+                    <span>{day.name}</span>
+                    {isToday && (
+                      <span className="bg-[#E11D48] text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded-full tracking-wider uppercase ml-0.5 shadow-2xs animate-pulse">
+                        Hôm nay
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="text-[11px] text-gray-400 font-medium">
+                      {day.enName}
                     </span>
+                    {dateStr && (
+                      <span className="text-[10px] font-bold text-rose-700 bg-rose-100/80 border border-rose-200/50 px-1.5 py-0.2 rounded-md tracking-tight">
+                        {dateStr}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Day Sync Button for Read-Only mode */}
+                  {isReadOnly && (
+                    <button
+                      onClick={() => onSyncDayToMe(day.id)}
+                      className="mt-1 flex items-center gap-1 text-[10px] text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-0.5 rounded-full font-bold shadow-2xs transition-all hover:scale-102"
+                      title={`Chép toàn bộ ${day.name} sang lịch của ${myUser.displayName}`}
+                    >
+                      <Copy className="w-2.5 h-2.5" />
+                      <span>Chép ngày</span>
+                    </button>
                   )}
                 </div>
-                <span className="text-[11px] text-gray-400 font-medium mt-0.5">
-                  {day.enName}
-                </span>
-
-                {/* Day Sync Button for Read-Only mode */}
-                {isReadOnly && (
-                  <button
-                    onClick={() => onSyncDayToMe(day.id)}
-                    className="mt-1 flex items-center gap-1 text-[10px] text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-0.5 rounded-full font-bold shadow-2xs transition-all hover:scale-102"
-                    title={`Chép toàn bộ ${day.name} sang lịch của ${myUser.displayName}`}
-                  >
-                    <Copy className="w-2.5 h-2.5" />
-                    <span>Chép ngày</span>
-                  </button>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* TABLE BODY (SLOTS & BREAKS) */}

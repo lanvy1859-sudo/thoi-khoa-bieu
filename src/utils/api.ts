@@ -4,6 +4,67 @@ import { fetchFromSupabase, saveToSupabase } from './supabaseSync';
 
 const LOCAL_STORAGE_KEY = 'tkb_lanvy_kimanh_v1';
 
+// Sanitize and migrate week dates to the user's requested sequence (starting Mon 07/09 to Sun 13/09)
+export function sanitizeScheduleData(data: FullScheduleData): FullScheduleData {
+  if (!data || !data.weeks) return data;
+  let changed = false;
+
+  const updatedWeeks = data.weeks.map((w) => {
+    if (w.id === 'week_1' && (w.name.includes('01/09') || w.startDate === '2026-09-01')) {
+      changed = true;
+      return {
+        ...w,
+        name: 'Tuần 1 (07/09 - 13/09)',
+        startDate: '2026-09-07',
+        endDate: '2026-09-13',
+      };
+    }
+    if (w.id === 'week_2' && (w.name.includes('08/09') || w.startDate === '2026-09-08')) {
+      changed = true;
+      return {
+        ...w,
+        name: 'Tuần 2 (14/09 - 20/09)',
+        startDate: '2026-09-14',
+        endDate: '2026-09-20',
+      };
+    }
+    return w;
+  });
+
+  // Ensure Tuần 3 and Tuần 4 exist sequentially
+  const hasWeek3 = updatedWeeks.some((w) => w.id === 'week_3');
+  if (!hasWeek3) {
+    updatedWeeks.push({
+      id: 'week_3',
+      weekNumber: 3,
+      name: 'Tuần 3 (21/09 - 27/09)',
+      startDate: '2026-09-21',
+      endDate: '2026-09-27',
+    });
+    changed = true;
+  }
+
+  const hasWeek4 = updatedWeeks.some((w) => w.id === 'week_4');
+  if (!hasWeek4) {
+    updatedWeeks.push({
+      id: 'week_4',
+      weekNumber: 4,
+      name: 'Tuần 4 (28/09 - 04/10)',
+      startDate: '2026-09-28',
+      endDate: '2026-10-04',
+    });
+    changed = true;
+  }
+
+  if (changed) {
+    const sanitized = { ...data, weeks: updatedWeeks };
+    saveLocalCachedData(sanitized);
+    saveToSupabase(sanitized);
+    return sanitized;
+  }
+  return data;
+}
+
 // Get cached data from localStorage as immediate initial state
 export function getLocalCachedData(): FullScheduleData {
   try {
@@ -11,7 +72,7 @@ export function getLocalCachedData(): FullScheduleData {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed && parsed.cells && parsed.weeks) {
-        return parsed;
+        return sanitizeScheduleData(parsed);
       }
     }
   } catch (e) {
@@ -35,8 +96,9 @@ export async function fetchScheduleAPI(): Promise<FullScheduleData> {
   try {
     const supabaseData = await fetchFromSupabase();
     if (supabaseData && supabaseData.cells) {
-      saveLocalCachedData(supabaseData);
-      return supabaseData;
+      const sanitized = sanitizeScheduleData(supabaseData);
+      saveLocalCachedData(sanitized);
+      return sanitized;
     }
   } catch (e) {
     console.warn('Supabase fetch bypassed, attempting API fallback:', e);
@@ -47,8 +109,9 @@ export async function fetchScheduleAPI(): Promise<FullScheduleData> {
     const res = await fetch('/api/schedule');
     if (res.ok) {
       const data = await res.json();
-      saveLocalCachedData(data);
-      return data;
+      const sanitized = sanitizeScheduleData(data);
+      saveLocalCachedData(sanitized);
+      return sanitized;
     }
   } catch (e) {
     console.warn('Failed to fetch from /api/schedule, using local cache', e);

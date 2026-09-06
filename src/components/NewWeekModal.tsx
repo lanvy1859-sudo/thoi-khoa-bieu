@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Calendar, Copy, Sparkles, Check, Info } from 'lucide-react';
 import { WeekData } from '../types';
+import { getNextSequentialWeek } from '../utils/dateUtils';
 
 interface NewWeekModalProps {
   isOpen: boolean;
@@ -23,10 +24,21 @@ export const NewWeekModal: React.FC<NewWeekModalProps> = ({
   onCreateWeek,
 }) => {
   const nextNum = totalWeeksCount + 1;
-  const [weekName, setWeekName] = useState(`Tuần ${nextNum}: Kế hoạch học tập`);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const defaultSeq = getNextSequentialWeek(currentWeek.startDate, nextNum);
+
+  const [weekName, setWeekName] = useState(defaultSeq.name);
+  const [startDate, setStartDate] = useState(defaultSeq.startDate);
+  const [endDate, setEndDate] = useState(defaultSeq.endDate);
   const [copyMode, setCopyMode] = useState<'inherit' | 'blank'>('inherit');
+
+  useEffect(() => {
+    if (isOpen) {
+      const seq = getNextSequentialWeek(currentWeek.startDate, totalWeeksCount + 1);
+      setWeekName(seq.name);
+      setStartDate(seq.startDate);
+      setEndDate(seq.endDate);
+    }
+  }, [isOpen, currentWeek.startDate, totalWeeksCount]);
 
   if (!isOpen) return null;
 
@@ -36,8 +48,8 @@ export const NewWeekModal: React.FC<NewWeekModalProps> = ({
 
     onCreateWeek({
       name: weekName.trim(),
-      startDate: startDate || new Date().toISOString().split('T')[0],
-      endDate: endDate || '',
+      startDate: startDate || defaultSeq.startDate,
+      endDate: endDate || defaultSeq.endDate,
       copyFromWeekId: copyMode === 'inherit' ? currentWeek.id : undefined,
     });
     onClose();

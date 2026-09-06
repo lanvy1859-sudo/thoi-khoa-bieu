@@ -6,7 +6,7 @@ export const DAYS_OF_WEEK: DayInfo[] = [
   { id: 'wed', name: 'Thứ Tư', shortName: 'T4', enName: 'Wed', icon: '☁️' },
   { id: 'thu', name: 'Thứ Năm', shortName: 'T5', enName: 'Thu', icon: '🍀' },
   { id: 'fri', name: 'Thứ Sáu', shortName: 'T6', enName: 'Fri', icon: '🌼' },
-  { id: 'sat', name: 'Thứ Bảy', shortName: 'T7', enName: 'Sat', icon: '🎀', isToday: true },
+  { id: 'sat', name: 'Thứ Bảy', shortName: 'T7', enName: 'Sat', icon: '🎀' },
   { id: 'sun', name: 'Chủ Nhật', shortName: 'CN', enName: 'Sun', icon: '☀️' },
 ];
 
@@ -276,17 +276,31 @@ export const INITIAL_WEEKS: WeekData[] = [
   {
     id: 'week_1',
     weekNumber: 1,
-    name: 'Tuần 1 (01/09 - 07/09)',
-    startDate: '2026-09-01',
-    endDate: '2026-09-07',
+    name: 'Tuần 1 (07/09 - 13/09)',
+    startDate: '2026-09-07',
+    endDate: '2026-09-13',
     isCurrent: true,
   },
   {
     id: 'week_2',
     weekNumber: 2,
-    name: 'Tuần 2 (08/09 - 14/09)',
-    startDate: '2026-09-08',
-    endDate: '2026-09-14',
+    name: 'Tuần 2 (14/09 - 20/09)',
+    startDate: '2026-09-14',
+    endDate: '2026-09-20',
+  },
+  {
+    id: 'week_3',
+    weekNumber: 3,
+    name: 'Tuần 3 (21/09 - 27/09)',
+    startDate: '2026-09-21',
+    endDate: '2026-09-27',
+  },
+  {
+    id: 'week_4',
+    weekNumber: 4,
+    name: 'Tuần 4 (28/09 - 04/10)',
+    startDate: '2026-09-28',
+    endDate: '2026-10-04',
   },
 ];
 

@@ -425,6 +425,7 @@ export default function App() {
             currentWorkspaceId={currentWorkspaceId}
             myIdentity={myIdentity}
             currentWeekId={scheduleData.currentWeekId}
+            currentWeek={currentWeek}
             cells={scheduleData.cells}
             onEditCell={handleOpenEditCell}
             onDeleteCell={handleDeleteCell}
@@ -444,6 +445,7 @@ export default function App() {
             currentWorkspaceId={currentWorkspaceId}
             myIdentity={myIdentity}
             currentWeekId={scheduleData.currentWeekId}
+            currentWeek={currentWeek}
             selectedDayId={selectedDay}
             onSelectDayId={(d) => setSelectedDay(d)}
             cells={scheduleData.cells}

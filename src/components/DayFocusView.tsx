@@ -10,14 +10,16 @@ import {
   ChevronRight,
   Plus,
 } from 'lucide-react';
-import { DayInfo, TimeSlot, ScheduleCell, WorkspaceId } from '../types';
+import { DayInfo, TimeSlot, ScheduleCell, WorkspaceId, WeekData } from '../types';
 import { DAYS_OF_WEEK, TIME_SLOTS, WORKSPACE_USERS } from '../data/scheduleConfig';
 import { ScheduleCellCard } from './ScheduleCellCard';
+import { getDayDateStr, getDayFullDateStr } from '../utils/dateUtils';
 
 interface DayFocusViewProps {
   currentWorkspaceId: WorkspaceId;
   myIdentity: WorkspaceId;
   currentWeekId: string;
+  currentWeek?: WeekData;
   selectedDayId: string;
   onSelectDayId: (dayId: string) => void;
   cells: Record<string, ScheduleCell>;
@@ -31,6 +33,7 @@ export const DayFocusView: React.FC<DayFocusViewProps> = ({
   currentWorkspaceId,
   myIdentity,
   currentWeekId,
+  currentWeek,
   selectedDayId,
   onSelectDayId,
   cells,
@@ -69,20 +72,34 @@ export const DayFocusView: React.FC<DayFocusViewProps> = ({
           <span className="hidden sm:inline">{prevDay.name}</span>
         </button>
 
-        <div className="flex items-center gap-1 overflow-x-auto py-1 px-2">
-          {DAYS_OF_WEEK.map((d) => (
-            <button
-              key={d.id}
-              onClick={() => onSelectDayId(d.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all shrink-0 ${
-                selectedDayId === d.id
-                  ? 'bg-rose-500 text-white shadow-xs scale-105'
-                  : 'text-gray-600 hover:bg-rose-50 hover:text-rose-700'
-              }`}
-            >
-              {d.name}
-            </button>
-          ))}
+        <div className="flex items-center gap-1.5 overflow-x-auto py-1 px-2">
+          {DAYS_OF_WEEK.map((d, dIdx) => {
+            const dateStr = getDayDateStr(currentWeek?.startDate, dIdx);
+            return (
+              <button
+                key={d.id}
+                onClick={() => onSelectDayId(d.id)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all shrink-0 flex items-center gap-1 ${
+                  selectedDayId === d.id
+                    ? 'bg-rose-500 text-white shadow-xs scale-105'
+                    : 'text-gray-600 hover:bg-rose-50 hover:text-rose-700'
+                }`}
+              >
+                <span>{d.name}</span>
+                {dateStr && (
+                  <span
+                    className={`text-[10px] font-semibold px-1 rounded ${
+                      selectedDayId === d.id
+                        ? 'bg-rose-600/70 text-white'
+                        : 'bg-rose-100/70 text-rose-700'
+                    }`}
+                  >
+                    {dateStr}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         <button
@@ -101,6 +118,11 @@ export const DayFocusView: React.FC<DayFocusViewProps> = ({
           <div>
             <h2 className="text-xl sm:text-2xl font-bold font-display text-gray-800 flex items-center gap-2">
               <span>{currentDayInfo.name}</span>
+              {currentWeek?.startDate && (
+                <span className="text-sm font-bold text-rose-600 bg-rose-50 border border-rose-200/80 px-2.5 py-0.5 rounded-lg">
+                  {getDayFullDateStr(currentWeek.startDate, currentIndex)}
+                </span>
+              )}
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700">
                 {selectedDayId === 'sun' ? 'Ngày nghỉ thảnh thơi' : 'Lịch học tập'}
               </span>

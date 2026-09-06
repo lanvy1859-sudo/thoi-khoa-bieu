@@ -191,7 +191,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            {/* "+ Tuần mới" Button */}
+            {/* " Tuần mới" Button */}
             <button
               id="btn-add-week"
               onClick={onOpenNewWeekModal}
