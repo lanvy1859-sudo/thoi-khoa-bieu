@@ -29,6 +29,7 @@ import {
   createNewWeekAPI,
   saveLocalCachedData,
 } from './utils/api';
+import { saveToSupabase, subscribeToSupabase } from './utils/supabaseSync';
 import { Sparkles, Heart, HelpCircle, Calendar, RefreshCw } from 'lucide-react';
 
 export default function App() {
@@ -81,7 +82,7 @@ export default function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Initial Fetch from API
+  // Initial Fetch from Supabase Cloud / API + Setup Realtime listener
   useEffect(() => {
     let isMounted = true;
     async function loadData() {
@@ -97,8 +98,25 @@ export default function App() {
       }
     }
     loadData();
+
+    // Supabase Realtime Subscription
+    const unsubscribe = subscribeToSupabase((incomingData) => {
+      if (isMounted && incomingData && incomingData.cells) {
+        setScheduleData(incomingData);
+        saveLocalCachedData(incomingData);
+        addToast(
+          'Đồng bộ từ Cloud ☁️',
+          'Đã nhận cập nhật thời khóa biểu mới nhất từ Supabase!',
+          'info'
+        );
+      }
+    });
+
     return () => {
       isMounted = false;
+      if (unsubscribe) {
+        unsubscribe();
+      }
     };
   }, []);
 
@@ -135,6 +153,7 @@ export default function App() {
       const updatedCells = { ...prev.cells, [cell.id]: cell };
       const updatedData = { ...prev, cells: updatedCells };
       saveLocalCachedData(updatedData);
+      saveToSupabase(updatedData);
       return updatedData;
     });
 
@@ -149,6 +168,7 @@ export default function App() {
       delete updatedCells[cellId];
       const updatedData = { ...prev, cells: updatedCells };
       saveLocalCachedData(updatedData);
+      saveToSupabase(updatedData);
       return updatedData;
     });
 
@@ -162,6 +182,7 @@ export default function App() {
       const updatedNotes = { ...prev.eveningNotes, [note.id]: note };
       const updatedData = { ...prev, eveningNotes: updatedNotes };
       saveLocalCachedData(updatedData);
+      saveToSupabase(updatedData);
       return updatedData;
     });
 
@@ -199,6 +220,7 @@ export default function App() {
         },
       };
       saveLocalCachedData(updated);
+      saveToSupabase(updated);
       return updated;
     });
 
@@ -243,6 +265,7 @@ export default function App() {
       });
       const updatedData = { ...prev, cells: updatedCells };
       saveLocalCachedData(updatedData);
+      saveToSupabase(updatedData);
       return updatedData;
     });
 
@@ -291,6 +314,7 @@ export default function App() {
       });
       const updatedData = { ...prev, cells: updatedCells, lastSyncedAt: new Date().toISOString() };
       saveLocalCachedData(updatedData);
+      saveToSupabase(updatedData);
       return updatedData;
     });
 
@@ -344,6 +368,7 @@ export default function App() {
         cells: updatedCells,
       };
       saveLocalCachedData(updatedData);
+      saveToSupabase(updatedData);
       return updatedData;
     });
 
@@ -359,6 +384,7 @@ export default function App() {
   const handleImportData = (imported: FullScheduleData) => {
     setScheduleData(imported);
     saveLocalCachedData(imported);
+    saveToSupabase(imported);
     addToast('Khôi phục dữ liệu thành công!', 'Thời khóa biểu đã được cập nhật từ file JSON.');
   };
 

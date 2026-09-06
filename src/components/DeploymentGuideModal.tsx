@@ -197,53 +197,68 @@ export const DeploymentGuideModal: React.FC<DeploymentGuideModalProps> = ({
             </div>
           )}
 
-          {/* TAB 2: HOW DATABASE & LOCAL PERSISTENCE WORKS */}
+          {/* TAB 2: HOW DATABASE & SUPABASE WORKS */}
           {activeTab === 'database' && (
             <div className="space-y-4">
-              <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200">
+              <div className="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200">
                 <div className="font-bold text-emerald-900 text-sm flex items-center gap-1.5 mb-1">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  Cơ chế lưu trữ cơ sở dữ liệu hiện tại của bạn
+                  Đã tích hợp cơ sở dữ liệu Supabase Cloud Realtime ✨
                 </div>
-                <p className="text-emerald-800">
-                  Trong mã nguồn này, chúng mình đã xây dựng sẵn <strong>Full-stack Kiến trúc 2 tầng (Server + Client Backup)</strong>:
+                <p className="text-emerald-800 text-[11px]">
+                  Mọi thao tác chỉnh sửa tiết học, đồng bộ ô/ngày/tuần đều tự động lưu lên Cloud Supabase và đẩy thời gian thực sang thiết bị của Lan Vy và Kim Ánh!
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="border border-purple-200 rounded-2xl p-3.5 bg-purple-50/30">
-                  <div className="font-bold text-purple-900 mb-1 flex items-center gap-1">
+              {/* SQL Setup Box */}
+              <div className="border border-purple-200 rounded-2xl p-4 bg-purple-50/30 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-purple-900 flex items-center gap-1.5">
                     <Database className="w-4 h-4 text-purple-600" />
-                    Tầng 1: File Database trên Server
+                    <span>Bước tạo bảng trên Supabase (Chỉ làm 1 lần duy nhất)</span>
                   </div>
-                  <p className="text-gray-600 text-[11px] leading-relaxed">
-                    Mọi thay đổi (sửa tiết, ghi chú, đồng bộ ô/ngày/tuần) đều được gửi về API <code className="bg-white px-1 py-0.5 rounded text-purple-700">/api/schedule/*</code> và tự động ghi vào file:
-                    <br />
-                    <code className="bg-purple-100/80 text-purple-800 px-1.5 py-0.5 rounded font-mono text-[10px] block mt-1">
-                      /data/schedule_store.json
-                    </code>
-                    Nhờ đó, khi người khác mở link ở thiết bị khác, dữ liệu luôn là mới nhất!
-                  </p>
-                </div>
-
-                <div className="border border-rose-200 rounded-2xl p-3.5 bg-rose-50/30">
-                  <div className="font-bold text-rose-900 mb-1 flex items-center gap-1">
-                    <Sparkles className="w-4 h-4 text-rose-500" />
-                    Tầng 2: LocalStorage Trình duyệt
-                  </div>
-                  <p className="text-gray-600 text-[11px] leading-relaxed">
-                    Đồng thời, ứng dụng lưu bản sao dự phòng ngay trong <code className="bg-white px-1 py-0.5 rounded text-rose-700">localStorage</code> của trình duyệt. Kể cả khi mất mạng tạm thời hay server khởi động lại, bạn vẫn không bao giờ bị mất thời khóa biểu!
-                  </p>
-                </div>
-              </div>
-
-              <div className="border border-gray-200 rounded-2xl p-4 bg-white space-y-2">
-                <div className="font-bold text-gray-800 text-xs">
-                  Nếu muốn nâng cấp lên Cloud Database (Firebase / Supabase):
+                  <button
+                    onClick={() =>
+                      handleCopyCode(
+                        `create table if not exists public.schedule_store (\n  id text primary key,\n  data jsonb not null,\n  updated_at timestamp with time zone default timezone('utc'::text, now()) not null\n);\n\nalter table public.schedule_store enable row level security;\n\ncreate policy "Allow public access" on public.schedule_store for all using (true) with check (true);\n\nalter publication supabase_realtime add table public.schedule_store;`,
+                        'sql'
+                      )
+                    }
+                    className="text-[11px] font-bold text-purple-700 bg-white border border-purple-200 hover:bg-purple-100 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{copiedSection === 'sql' ? 'Đã sao chép!' : 'Chép mã SQL'}</span>
+                  </button>
                 </div>
                 <p className="text-gray-600 text-[11px]">
-                  Nếu sau này thời khóa biểu có hàng trăm bạn học sinh sử dụng và bạn muốn có hệ thống đăng nhập tài khoản Google riêng biệt, bạn chỉ cần thay thế phần đọc/ghi trong file <code className="font-mono bg-gray-100 px-1 rounded">server.ts</code> bằng <strong>Firebase Firestore</strong> (dùng thư viện <code>firebase-admin</code>) hoặc <strong>Supabase</strong>.
+                  Vào <strong>Supabase Dashboard</strong> &gt; chọn dự án của bạn &gt; vào mục <strong>SQL Editor</strong> &gt; Dán đoạn mã này vào và nhấn <strong>Run</strong>:
                 </p>
+                <pre className="bg-gray-900 text-emerald-300 p-3 rounded-xl font-mono text-[11px] overflow-x-auto whitespace-pre">
+{`create table if not exists public.schedule_store (
+  id text primary key,
+  data jsonb not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.schedule_store enable row level security;
+create policy "Allow public access" on public.schedule_store for all using (true) with check (true);
+alter publication supabase_realtime add table public.schedule_store;`}
+                </pre>
+              </div>
+
+              {/* Vercel Environment Variables Box */}
+              <div className="border border-gray-200 rounded-2xl p-4 bg-white shadow-2xs space-y-2">
+                <div className="font-bold text-gray-800 text-xs flex items-center gap-1.5">
+                  <Globe className="w-4 h-4 text-rose-500" />
+                  <span>Cài đặt Biến Môi Trường (Environment Variables) khi đưa lên Vercel</span>
+                </div>
+                <p className="text-gray-600 text-[11px]">
+                  Trong trang cấu hình dự án trên Vercel (mục <strong>Settings &gt; Environment Variables</strong>), hãy thêm 2 biến sau:
+                </p>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-2.5 font-mono text-[11px] space-y-1 text-gray-700">
+                  <div><strong>VITE_SUPABASE_URL</strong> = https://zuqukykninqoskfetlaq.supabase.co</div>
+                  <div><strong>VITE_SUPABASE_ANON_KEY</strong> = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX...</div>
+                </div>
               </div>
             </div>
           )}

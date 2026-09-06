@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { WorkspaceId, WeekData } from '../types';
 import { WORKSPACE_USERS } from '../data/scheduleConfig';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 interface HeaderProps {
   currentWorkspaceId: WorkspaceId;
@@ -97,6 +98,15 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="bg-[#FFE4E8] text-[#E11D48] text-[10px] font-extrabold px-2.5 py-0.5 rounded-full tracking-wider uppercase">
                   PASTEL AESTHETIC
                 </span>
+                {isSupabaseConfigured && (
+                  <span
+                    className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs"
+                    title="Đã kết nối cơ sở dữ liệu Supabase Cloud thời gian thực"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Supabase Cloud</span>
+                  </span>
+                )}
               </div>
               <p className="text-xs text-gray-500 font-medium">
                 Mỗi ngày học tập là một bông hoa nhỏ nở rộ 🌷
