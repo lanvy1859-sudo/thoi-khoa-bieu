@@ -1,0 +1,407 @@
+{
+  "weeks": [
+    {
+      "id": "week_1",
+      "weekNumber": 1,
+      "name": "Tuần 1 (01/09 - 07/09)",
+      "startDate": "2026-09-01",
+      "endDate": "2026-09-07",
+      "isCurrent": true
+    },
+    {
+      "id": "week_2",
+      "weekNumber": 2,
+      "name": "Tuần 2 (08/09 - 14/09)",
+      "startDate": "2026-09-08",
+      "endDate": "2026-09-14"
+    }
+  ],
+  "currentWeekId": "week_1",
+  "cells": {
+    "lan_vy_week_1_mon_m1": {
+      "id": "lan_vy_week_1_mon_m1",
+      "subject": "Chào Cờ & SHDC",
+      "room": "Sân Trường",
+      "teacher": "Thầy Tổng PT",
+      "colorTheme": "rose",
+      "icon": "🌸",
+      "notes": "Mặc đồng phục áo dài / chỉnh tề"
+    },
+    "lan_vy_week_1_tue_m1": {
+      "id": "lan_vy_week_1_tue_m1",
+      "subject": "Vật Lý",
+      "room": "Phòng Lý",
+      "teacher": "Thầy Quang",
+      "colorTheme": "sky",
+      "icon": "⚡"
+    },
+    "lan_vy_week_1_wed_m1": {
+      "id": "lan_vy_week_1_wed_m1",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "lan_vy_week_1_thu_m1": {
+      "id": "lan_vy_week_1_thu_m1",
+      "subject": "Ngữ Văn",
+      "room": "A201",
+      "teacher": "Cô Mai",
+      "colorTheme": "rose",
+      "icon": "📖"
+    },
+    "lan_vy_week_1_fri_m1": {
+      "id": "lan_vy_week_1_fri_m1",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "lan_vy_week_1_sat_m1": {
+      "id": "lan_vy_week_1_sat_m1",
+      "subject": "Ôn Tập Nâng Cao",
+      "room": "Thư Viện",
+      "colorTheme": "lavender",
+      "icon": "📚",
+      "notes": "Luyện đề thi thử kỳ I"
+    },
+
+    "lan_vy_week_1_mon_m2": {
+      "id": "lan_vy_week_1_mon_m2",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐",
+      "notes": "Kiểm tra 15p đạo hàm & tích..."
+    },
+    "lan_vy_week_1_tue_m2": {
+      "id": "lan_vy_week_1_tue_m2",
+      "subject": "Vật Lý",
+      "room": "Phòng Lý",
+      "teacher": "Thầy Quang",
+      "colorTheme": "sky",
+      "icon": "⚡",
+      "notes": "Làm thí nghiệm con lắc đơn"
+    },
+    "lan_vy_week_1_wed_m2": {
+      "id": "lan_vy_week_1_wed_m2",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "lan_vy_week_1_thu_m2": {
+      "id": "lan_vy_week_1_thu_m2",
+      "subject": "Ngữ Văn",
+      "room": "A201",
+      "teacher": "Cô Mai",
+      "colorTheme": "rose",
+      "icon": "📖"
+    },
+    "lan_vy_week_1_fri_m2": {
+      "id": "lan_vy_week_1_fri_m2",
+      "subject": "Vật Lý",
+      "room": "Phòng Lý",
+      "teacher": "Thầy Quang",
+      "colorTheme": "sky",
+      "icon": "⚡"
+    },
+    "lan_vy_week_1_sat_m2": {
+      "id": "lan_vy_week_1_sat_m2",
+      "subject": "Ôn Tập Nâng Cao",
+      "room": "Thư Viện",
+      "colorTheme": "lavender",
+      "icon": "📚"
+    },
+
+    "lan_vy_week_1_mon_m3": {
+      "id": "lan_vy_week_1_mon_m3",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐",
+      "notes": "Luyện bài tập chương 2"
+    },
+    "lan_vy_week_1_tue_m3": {
+      "id": "lan_vy_week_1_tue_m3",
+      "subject": "Hóa Học",
+      "room": "Phòng Hóa",
+      "teacher": "Cô Lan",
+      "colorTheme": "honey",
+      "icon": "🧪"
+    },
+    "lan_vy_week_1_wed_m3": {
+      "id": "lan_vy_week_1_wed_m3",
+      "subject": "Địa Lý",
+      "room": "A201",
+      "teacher": "Cô Hiền",
+      "colorTheme": "mint",
+      "icon": "🌍"
+    },
+    "lan_vy_week_1_thu_m3": {
+      "id": "lan_vy_week_1_thu_m3",
+      "subject": "Tiếng Anh",
+      "room": "A201",
+      "teacher": "Cô Emily",
+      "colorTheme": "mint",
+      "icon": "🇬🇧"
+    },
+    "lan_vy_week_1_fri_m3": {
+      "id": "lan_vy_week_1_fri_m3",
+      "subject": "Sinh Học",
+      "room": "A201",
+      "teacher": "Cô Thảo",
+      "colorTheme": "mint",
+      "icon": "🌿"
+    },
+
+    "lan_vy_week_1_mon_m4": {
+      "id": "lan_vy_week_1_mon_m4",
+      "subject": "Ngữ Văn",
+      "room": "A201",
+      "teacher": "Cô Mai",
+      "colorTheme": "rose",
+      "icon": "📖"
+    },
+    "lan_vy_week_1_tue_m4": {
+      "id": "lan_vy_week_1_tue_m4",
+      "subject": "Sinh Học",
+      "room": "Phòng Sinh",
+      "teacher": "Cô Thảo",
+      "colorTheme": "mint",
+      "icon": "🌿"
+    },
+    "lan_vy_week_1_wed_m4": {
+      "id": "lan_vy_week_1_wed_m4",
+      "subject": "GDCD",
+      "room": "A201",
+      "teacher": "Cô Thu",
+      "colorTheme": "rose",
+      "icon": "⚖️"
+    },
+    "lan_vy_week_1_thu_m4": {
+      "id": "lan_vy_week_1_thu_m4",
+      "subject": "Hóa Học",
+      "room": "Phòng Hóa",
+      "teacher": "Cô Lan",
+      "colorTheme": "honey",
+      "icon": "🧪"
+    },
+    "lan_vy_week_1_fri_m4": {
+      "id": "lan_vy_week_1_fri_m4",
+      "subject": "Lịch Sử",
+      "room": "A201",
+      "teacher": "Thầy Hưng",
+      "colorTheme": "peach",
+      "icon": "📜"
+    },
+
+    "lan_vy_week_1_mon_m5": {
+      "id": "lan_vy_week_1_mon_m5",
+      "subject": "Ngữ Văn",
+      "room": "A201",
+      "teacher": "Cô Mai",
+      "colorTheme": "rose",
+      "icon": "📖"
+    },
+    "lan_vy_week_1_tue_m5": {
+      "id": "lan_vy_week_1_tue_m5",
+      "subject": "Tiếng Anh",
+      "room": "A201",
+      "teacher": "Cô Emily",
+      "colorTheme": "mint",
+      "icon": "🇬🇧"
+    },
+    "lan_vy_week_1_wed_m5": {
+      "id": "lan_vy_week_1_wed_m5",
+      "subject": "Tin Học",
+      "room": "Lab 1",
+      "teacher": "Thầy Dũng",
+      "colorTheme": "lavender",
+      "icon": "💻"
+    },
+    "lan_vy_week_1_thu_m5": {
+      "id": "lan_vy_week_1_thu_m5",
+      "subject": "Thể Dục",
+      "room": "Nhà Thi Đấu",
+      "teacher": "Thầy Nam",
+      "colorTheme": "mint",
+      "icon": "🏸"
+    },
+    "lan_vy_week_1_fri_m5": {
+      "id": "lan_vy_week_1_fri_m5",
+      "subject": "Sinh Hoạt Lớp",
+      "room": "A201",
+      "teacher": "Cô Mai",
+      "colorTheme": "rose",
+      "icon": "🌸"
+    },
+
+    "lan_vy_week_1_mon_a1": {
+      "id": "lan_vy_week_1_mon_a1",
+      "subject": "Bồi Dưỡng Toán",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "lan_vy_week_1_wed_a1": {
+      "id": "lan_vy_week_1_wed_a1",
+      "subject": "Tiếng Anh Giao Tiếp",
+      "room": "P.Nghe",
+      "teacher": "Cô Emily",
+      "colorTheme": "mint",
+      "icon": "🇬🇧"
+    },
+    "lan_vy_week_1_fri_a1": {
+      "id": "lan_vy_week_1_fri_a1",
+      "subject": "CLB Mỹ Thuật & Vẽ",
+      "room": "Phòng Hội Họa",
+      "colorTheme": "peach",
+      "icon": "🎨"
+    },
+    "lan_vy_week_1_mon_self_study": {
+      "id": "lan_vy_week_1_mon_self_study",
+      "subject": "Ôn Tập Toán & Viết Văn",
+      "room": "Bàn học ở nhà",
+      "colorTheme": "lavender",
+      "icon": "🌙",
+      "notes": "Làm xong đề cương Toán bài 3"
+    },
+
+    "kim_anh_week_1_mon_m1": {
+      "id": "kim_anh_week_1_mon_m1",
+      "subject": "Chào Cờ & SHDC",
+      "room": "Sân Trường",
+      "teacher": "Thầy Tổng PT",
+      "colorTheme": "rose",
+      "icon": "🌸",
+      "notes": "Mặc đồng phục áo dài / chỉnh tề"
+    },
+    "kim_anh_week_1_mon_m2": {
+      "id": "kim_anh_week_1_mon_m2",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "kim_anh_week_1_mon_m3": {
+      "id": "kim_anh_week_1_mon_m3",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "kim_anh_week_1_tue_m1": {
+      "id": "kim_anh_week_1_tue_m1",
+      "subject": "Vật Lý",
+      "room": "Phòng Lý",
+      "teacher": "Thầy Quang",
+      "colorTheme": "sky",
+      "icon": "⚡"
+    },
+    "kim_anh_week_1_tue_m2": {
+      "id": "kim_anh_week_1_tue_m2",
+      "subject": "Vật Lý",
+      "room": "Phòng Lý",
+      "teacher": "Thầy Quang",
+      "colorTheme": "sky",
+      "icon": "⚡"
+    },
+    "kim_anh_week_1_wed_m1": {
+      "id": "kim_anh_week_1_wed_m1",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "kim_anh_week_1_wed_m2": {
+      "id": "kim_anh_week_1_wed_m2",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "kim_anh_week_1_thu_m1": {
+      "id": "kim_anh_week_1_thu_m1",
+      "subject": "Ngữ Văn",
+      "room": "A201",
+      "teacher": "Cô Mai",
+      "colorTheme": "rose",
+      "icon": "📖"
+    },
+    "kim_anh_week_1_thu_m2": {
+      "id": "kim_anh_week_1_thu_m2",
+      "subject": "Ngữ Văn",
+      "room": "A201",
+      "teacher": "Cô Mai",
+      "colorTheme": "rose",
+      "icon": "📖"
+    },
+    "kim_anh_week_1_fri_m1": {
+      "id": "kim_anh_week_1_fri_m1",
+      "subject": "Toán Học",
+      "room": "A201",
+      "teacher": "Thầy Minh",
+      "colorTheme": "sky",
+      "icon": "📐"
+    },
+    "kim_anh_week_1_fri_m2": {
+      "id": "kim_anh_week_1_fri_m2",
+      "subject": "Vật Lý",
+      "room": "Phòng Lý",
+      "teacher": "Thầy Quang",
+      "colorTheme": "sky",
+      "icon": "⚡"
+    },
+    "kim_anh_week_1_sat_m1": {
+      "id": "kim_anh_week_1_sat_m1",
+      "subject": "Ôn Tập Nâng Cao",
+      "room": "Thư Viện",
+      "colorTheme": "lavender",
+      "icon": "📚",
+      "notes": "Luyện đề thi thử kỳ I"
+    },
+    "kim_anh_week_1_sat_m2": {
+      "id": "kim_anh_week_1_sat_m2",
+      "subject": "Ôn Tập Nâng Cao",
+      "room": "Thư Viện",
+      "colorTheme": "lavender",
+      "icon": "📚"
+    }
+  },
+  "eveningNotes": {
+    "lan_vy_week_1": {
+      "id": "lan_vy_week_1",
+      "goals": "Hoàn thành đề kiểm tra 15p Toán đại số & thuộc 25 từ vựng tiếng Anh",
+      "notes": "Nhớ ôn lại công thức lượng giác cơ bản và bài tập con lắc đơn trước thứ 3 nhé! Giữ sức khỏe và ngủ trước 22:30 🌸",
+      "mood": "🌷",
+      "tasks": [
+        { "id": "t1", "text": "Hoàn thành đề kiểm tra 15p Toán đại số", "completed": true },
+        { "id": "t2", "text": "Soạn văn bài Chiếc Thuyền Ngoài Xa", "completed": true },
+        { "id": "t3", "text": "Thuộc 25 từ vựng tiếng Anh Unit 3", "completed": false },
+        { "id": "t4", "text": "Luyện giải đề Vật Lý chương Động lực học", "completed": false }
+      ]
+    },
+    "kim_anh_week_1": {
+      "id": "kim_anh_week_1",
+      "goals": "Ôn lại dạng bài tập Hóa học Hữu cơ & làm 3 đề Toán nâng cao",
+      "notes": "Tuần này chú ý giờ giấc học Tiết 1 không để muộn, chuẩn bị tập vẽ bản đồ trước ngày thứ Tư! ☀️",
+      "mood": "✨",
+      "tasks": [
+        { "id": "t5", "text": "Ôn lại dạng bài tập Hóa học Hữu cơ", "completed": true },
+        { "id": "t6", "text": "Làm xong 3 đề Toán nâng cao", "completed": false },
+        { "id": "t7", "text": "Chuẩn bị thuyết trình Địa lý về khí hậu Việt Nam", "completed": false }
+      ]
+    }
+  }
+}
