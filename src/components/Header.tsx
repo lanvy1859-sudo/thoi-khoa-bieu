@@ -93,7 +93,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-extrabold font-display text-gray-800 tracking-tight">
-                  Thời Khóa Biểu Dịu Dàng
+                  Thời Khóa Biểu
                 </h1>
                 <span className="bg-[#FFE4E8] text-[#E11D48] text-[10px] font-extrabold px-2.5 py-0.5 rounded-full tracking-wider uppercase">
                   PASTEL AESTHETIC
