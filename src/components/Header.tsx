@@ -198,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold text-xs px-3 py-1.5 rounded-xl shadow-xs transition-all hover:scale-102 active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>+ Tuần mới</span>
+              <span> Tuần mới</span>
             </button>
 
             {/* Live Clock & Status Badge */}
