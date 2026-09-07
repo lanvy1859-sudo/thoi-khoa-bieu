@@ -28,13 +28,15 @@ import {
   syncFullWeekAPI,
   createNewWeekAPI,
   saveLocalCachedData,
+  getLocalCachedData,
 } from './utils/api';
 import { saveToSupabase, subscribeToSupabase } from './utils/supabaseSync';
 import { Sparkles, Heart, HelpCircle, Calendar, RefreshCw } from 'lucide-react';
+import { BookLoadingScreen } from './components/BookLoadingScreen';
 
 export default function App() {
-  // Main Data State
-  const [scheduleData, setScheduleData] = useState<FullScheduleData>(INITIAL_SCHEDULE_DATA);
+  // Main Data State: Initialize immediately with local cached data to prevent flashing old data
+  const [scheduleData, setScheduleData] = useState<FullScheduleData>(() => getLocalCachedData());
   const [isLoading, setIsLoading] = useState(true);
 
   // Workspace & User State
@@ -86,6 +88,7 @@ export default function App() {
   useEffect(() => {
     let isMounted = true;
     async function loadData() {
+      const startTime = Date.now();
       try {
         const data = await fetchScheduleAPI();
         if (isMounted && data) {
@@ -94,7 +97,11 @@ export default function App() {
       } catch (err) {
         console.error('Failed to load schedule from server:', err);
       } finally {
-        if (isMounted) setIsLoading(false);
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 900 - elapsed);
+        setTimeout(() => {
+          if (isMounted) setIsLoading(false);
+        }, remaining);
       }
     }
     loadData();
@@ -390,6 +397,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#faf7f5] text-[#332d3b] flex flex-col selection:bg-rose-200 selection:text-rose-900">
+      {/* Book Lottie Loading Screen (Requested: Display until data is completely loaded) */}
+      {isLoading && (
+        <BookLoadingScreen
+          message="Đang tải thời khóa biểu..."
+          subMessage="Đồng bộ dữ liệu học tập dịu dàng của bạn..."
+        />
+      )}
+
       {/* Header */}
       <Header
         currentWorkspaceId={currentWorkspaceId}
@@ -470,7 +485,7 @@ export default function App() {
       <footer className="mt-8 border-t border-rose-100 bg-white/70 py-5 text-center text-xs text-gray-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-base">🌸</span>
+            <span className="text-base">������</span>
             <span className="font-semibold text-gray-700">
               Thời khóa biểu Lan Vy &amp; Kim Ánh
             </span>

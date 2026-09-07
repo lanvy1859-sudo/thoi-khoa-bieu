@@ -6,6 +6,7 @@ import {
   Pencil,
   Trash2,
   Plus,
+  Clock,
 } from 'lucide-react';
 import { ScheduleCell, WorkspaceId } from '../types';
 import { COLOR_PRESETS, WORKSPACE_USERS } from '../data/scheduleConfig';
@@ -162,6 +163,23 @@ export const ScheduleCellCard: React.FC<ScheduleCellCardProps> = ({
               >
                 <User className="w-2.5 h-2.5 shrink-0 opacity-70" />
                 <span className="truncate max-w-[90px]">{cell.teacher}</span>
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Custom Time / Extra Class Badge */}
+        {(cell.customTime || (cell.customStartTime && cell.customEndTime) || cell.isExtraClass) && (
+          <div className="flex flex-wrap items-center gap-1 mt-1.5">
+            {(cell.customTime || (cell.customStartTime && cell.customEndTime)) && (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9.5px] font-extrabold bg-purple-100/95 text-purple-700 border border-purple-200/80 shadow-2xs">
+                <Clock className="w-2.5 h-2.5 shrink-0" />
+                <span>{cell.customTime || `${cell.customStartTime} - ${cell.customEndTime}`}</span>
+              </span>
+            )}
+            {cell.isExtraClass && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[9.5px] font-extrabold bg-amber-100/95 text-amber-800 border border-amber-200/80 shadow-2xs">
+                <span>📚 Học thêm</span>
               </span>
             )}
           </div>

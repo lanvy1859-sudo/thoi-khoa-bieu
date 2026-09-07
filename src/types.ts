@@ -39,6 +39,10 @@ export interface ScheduleCell {
   tasks?: TaskItem[];
   colorTheme?: string; // preset key or hex
   icon?: string; // icon name
+  customStartTime?: string; // e.g. '15:30'
+  customEndTime?: string; // e.g. '17:00'
+  customTime?: string; // formatted e.g. '15:30 - 17:00'
+  isExtraClass?: boolean; // true = Lịch học thêm / Khung giờ riêng
   updatedAt?: string;
 }
 

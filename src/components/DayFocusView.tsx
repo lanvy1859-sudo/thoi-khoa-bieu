@@ -154,13 +154,20 @@ export const DayFocusView: React.FC<DayFocusViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {morningSlots.map((slot) => {
               const cellData = cells[getCellKey(slot.id)];
+              const customTimeDisplay = cellData?.customTime || (cellData?.customStartTime && cellData?.customEndTime ? `${cellData.customStartTime} - ${cellData.customEndTime}` : null);
               return (
                 <div key={slot.id} className="border border-rose-100 rounded-2xl p-3 bg-gray-50/50">
                   <div className="flex items-center justify-between mb-2 text-xs">
                     <span className="font-extrabold text-gray-800">{slot.name}</span>
-                    <span className="text-gray-500 font-medium">
-                      {slot.startTime} - {slot.endTime} (45p)
-                    </span>
+                    {customTimeDisplay ? (
+                      <span className="text-purple-700 font-bold bg-purple-50 border border-purple-200/60 px-1.5 py-0.5 rounded-md text-[10.5px]">
+                        {customTimeDisplay}
+                      </span>
+                    ) : (
+                      <span className="text-gray-500 font-medium">
+                        {slot.startTime} - {slot.endTime} (45p)
+                      </span>
+                    )}
                   </div>
                   <ScheduleCellCard
                     cell={cellData}
@@ -204,13 +211,20 @@ export const DayFocusView: React.FC<DayFocusViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {afternoonSlots.map((slot) => {
               const cellData = cells[getCellKey(slot.id)];
+              const customTimeDisplay = cellData?.customTime || (cellData?.customStartTime && cellData?.customEndTime ? `${cellData.customStartTime} - ${cellData.customEndTime}` : null);
               return (
                 <div key={slot.id} className="border border-orange-100 rounded-2xl p-3 bg-gray-50/50">
                   <div className="flex items-center justify-between mb-2 text-xs">
                     <span className="font-extrabold text-gray-800">{slot.name}</span>
-                    <span className="text-gray-500 font-medium">
-                      {slot.startTime} - {slot.endTime} (45p)
-                    </span>
+                    {customTimeDisplay ? (
+                      <span className="text-purple-700 font-bold bg-purple-50 border border-purple-200/60 px-1.5 py-0.5 rounded-md text-[10.5px]">
+                        {customTimeDisplay}
+                      </span>
+                    ) : (
+                      <span className="text-gray-500 font-medium">
+                        {slot.startTime} - {slot.endTime} (45p)
+                      </span>
+                    )}
                   </div>
                   <ScheduleCellCard
                     cell={cellData}

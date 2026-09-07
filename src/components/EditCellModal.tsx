@@ -7,6 +7,7 @@ import {
   Sparkles,
   Trash2,
   ListTodo,
+  Clock,
 } from 'lucide-react';
 import { ScheduleCell, TaskItem, WorkspaceId } from '../types';
 import {
@@ -67,6 +68,12 @@ export const EditCellModal: React.FC<EditCellModalProps> = ({
   const [showTasks, setShowTasks] = useState(false);
   const [newTaskText, setNewTaskText] = useState('');
 
+  // Flexible time slots for extracurricular classes & custom timing
+  const [isCustomTime, setIsCustomTime] = useState(false);
+  const [customStartTime, setCustomStartTime] = useState('');
+  const [customEndTime, setCustomEndTime] = useState('');
+  const [isExtraClass, setIsExtraClass] = useState(false);
+
   const dayInfo = DAYS_OF_WEEK.find((d) => d.id === dayId);
   const slotInfo = TIME_SLOTS.find((s) => s.id === slotId);
 
@@ -80,6 +87,16 @@ export const EditCellModal: React.FC<EditCellModalProps> = ({
       setColorTheme(cellData.colorTheme || 'rose');
       setTasks(cellData.tasks || []);
       setShowTasks((cellData.tasks || []).length > 0);
+
+      const hasCustom = Boolean(cellData.customStartTime || cellData.customEndTime || cellData.customTime);
+      setIsCustomTime(hasCustom);
+      setCustomStartTime(
+        cellData.customStartTime || (cellData.customTime ? cellData.customTime.split('-')[0]?.trim() : slotInfo?.startTime || '')
+      );
+      setCustomEndTime(
+        cellData.customEndTime || (cellData.customTime ? cellData.customTime.split('-')[1]?.trim() : slotInfo?.endTime || '')
+      );
+      setIsExtraClass(Boolean(cellData.isExtraClass));
     } else {
       setSubject('');
       setIcon('🌸');
@@ -89,9 +106,15 @@ export const EditCellModal: React.FC<EditCellModalProps> = ({
       setColorTheme('rose');
       setTasks([]);
       setShowTasks(false);
+
+      const isWeekend = dayId === 'sat' || dayId === 'sun';
+      setIsCustomTime(isWeekend);
+      setCustomStartTime(slotInfo ? slotInfo.startTime : '15:30');
+      setCustomEndTime(slotInfo ? slotInfo.endTime : '17:00');
+      setIsExtraClass(isWeekend);
     }
     setNewTaskText('');
-  }, [cellData, isOpen]);
+  }, [cellData, isOpen, dayId, slotInfo]);
 
   if (!isOpen) return null;
 
@@ -140,6 +163,13 @@ export const EditCellModal: React.FC<EditCellModalProps> = ({
       notes: notes.trim() || undefined,
       colorTheme,
       tasks: tasks.length > 0 ? tasks : undefined,
+      customStartTime: isCustomTime && customStartTime.trim() ? customStartTime.trim() : undefined,
+      customEndTime: isCustomTime && customEndTime.trim() ? customEndTime.trim() : undefined,
+      customTime:
+        isCustomTime && customStartTime.trim() && customEndTime.trim()
+          ? `${customStartTime.trim()} - ${customEndTime.trim()}`
+          : undefined,
+      isExtraClass: isExtraClass || undefined,
     };
 
     onSave(newCell);
@@ -305,7 +335,101 @@ export const EditCellModal: React.FC<EditCellModalProps> = ({
               </div>
             </div>
 
-            {/* 6. GIÁO VIÊN PHỤ TRÁCH & PHÒNG HỌC (Matching image 2) */}
+            {/* 6. KHUNG GIỜ LINH HOẠT & LỊCH HỌC THÊM (Phù hợp giờ học thêm, lệch giờ, T7/CN) */}
+            <div className="bg-[#FAF8F6] border border-rose-100/90 rounded-2xl p-3.5 space-y-2.5 shadow-2xs">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label htmlFor="toggle-custom-time" className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    id="toggle-custom-time"
+                    type="checkbox"
+                    checked={isCustomTime}
+                    onChange={(e) => setIsCustomTime(e.target.checked)}
+                    className="w-4 h-4 rounded text-rose-500 focus:ring-rose-400 accent-rose-500"
+                  />
+                  <span className="text-xs font-extrabold text-gray-800 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-rose-500" />
+                    Tùy chỉnh giờ học riêng / Lịch học thêm
+                  </span>
+                </label>
+
+                <label htmlFor="toggle-extra-class" className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-amber-800 select-none bg-amber-50 hover:bg-amber-100/70 px-2 py-1 rounded-xl border border-amber-200/80 transition-colors">
+                  <input
+                    id="toggle-extra-class"
+                    type="checkbox"
+                    checked={isExtraClass}
+                    onChange={(e) => setIsExtraClass(e.target.checked)}
+                    className="w-3.5 h-3.5 rounded text-amber-500 accent-amber-500"
+                  />
+                  <span>📚 Lớp học thêm</span>
+                </label>
+              </div>
+
+              {isCustomTime && (
+                <div className="space-y-2 pt-1.5 border-t border-rose-100/70 animate-in fade-in duration-200">
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-600 mb-1">
+                        Giờ bắt đầu (VD: 15:30, 09:30)
+                      </label>
+                      <input
+                        id="input-custom-start-time"
+                        type="text"
+                        placeholder="15:30"
+                        value={customStartTime}
+                        onChange={(e) => setCustomStartTime(e.target.value)}
+                        className="w-full h-9 px-3 text-xs rounded-xl border border-gray-200 focus:outline-hidden focus:border-rose-400 focus:ring-2 focus:ring-rose-200 bg-white font-bold text-gray-800"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-600 mb-1">
+                        Giờ kết thúc (VD: 17:00, 11:00)
+                      </label>
+                      <input
+                        id="input-custom-end-time"
+                        type="text"
+                        placeholder="17:00"
+                        value={customEndTime}
+                        onChange={(e) => setCustomEndTime(e.target.value)}
+                        className="w-full h-9 px-3 text-xs rounded-xl border border-gray-200 focus:outline-hidden focus:border-rose-400 focus:ring-2 focus:ring-rose-200 bg-white font-bold text-gray-800"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Quick suggested time presets for extracurriculars */}
+                  <div>
+                    <div className="text-[10.5px] font-semibold text-gray-500 mb-1.5 flex items-center gap-1">
+                      <span>Khung giờ gợi ý:</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { label: '15:30 - 17:00 (Học thêm chiều)', start: '15:30', end: '17:00' },
+                        { label: '09:30 - 11:00 (T7 / CN)', start: '09:30', end: '11:00' },
+                        { label: '17:30 - 19:00 (Tối ca 1)', start: '17:30', end: '19:00' },
+                        { label: '19:30 - 21:00 (Tối ca 2)', start: '19:30', end: '21:00' },
+                        { label: '08:00 - 09:30 (Sáng cuối tuần)', start: '08:00', end: '09:30' },
+                        { label: '14:00 - 15:30 (Đầu giờ chiều)', start: '14:00', end: '15:30' },
+                      ].map((preset) => (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => {
+                            setCustomStartTime(preset.start);
+                            setCustomEndTime(preset.end);
+                            setIsCustomTime(true);
+                            setIsExtraClass(true);
+                          }}
+                          className="text-[10px] font-bold px-2 py-1 rounded-lg bg-white hover:bg-rose-50 border border-gray-200 text-gray-700 hover:text-rose-700 transition-colors shadow-2xs cursor-pointer"
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 7. GIÁO VIÊN PHỤ TRÁCH & PHÒNG HỌC (Matching image 2) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="flex items-center gap-1 text-xs font-bold text-gray-700 mb-1">
