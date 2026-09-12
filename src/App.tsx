@@ -8,6 +8,7 @@ import { DayFocusView } from './components/DayFocusView';
 import { EveningSelfStudySection } from './components/EveningSelfStudySection';
 import { EditCellModal } from './components/EditCellModal';
 import { NewWeekModal } from './components/NewWeekModal';
+import { CopyWeekModal } from './components/CopyWeekModal';
 import { SyncConfirmModal } from './components/SyncConfirmModal';
 import { DeploymentGuideModal } from './components/DeploymentGuideModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
@@ -27,6 +28,7 @@ import {
   syncDayAPI,
   syncFullWeekAPI,
   createNewWeekAPI,
+  copyWeekScheduleAPI,
   saveLocalCachedData,
   getLocalCachedData,
 } from './utils/api';
@@ -56,6 +58,7 @@ export default function App() {
   } | null>(null);
 
   const [isNewWeekModalOpen, setIsNewWeekModalOpen] = useState(false);
+  const [isCopyWeekModalOpen, setIsCopyWeekModalOpen] = useState(false);
   const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
 
   // Sync Confirmation Modal
@@ -183,18 +186,25 @@ export default function App() {
     await deleteCellAPI(cellId);
   };
 
-  // Handler: Save Evening Notes
+  // Handler: Save Evening Notes (Góc tự học & Sổ tay ghi chú)
   const handleSaveEveningNotes = async (note: EveningStudyNotes) => {
+    const cleanId = note.id.replace(/_evening$/, '');
+    const cleanNote: EveningStudyNotes = { ...note, id: cleanId };
+
     setScheduleData((prev) => {
-      const updatedNotes = { ...prev.eveningNotes, [note.id]: note };
+      const updatedNotes = {
+        ...(prev.eveningNotes || {}),
+        [cleanId]: cleanNote,
+        [`${cleanId}_evening`]: cleanNote,
+      };
       const updatedData = { ...prev, eveningNotes: updatedNotes };
       saveLocalCachedData(updatedData);
       saveToSupabase(updatedData);
       return updatedData;
     });
 
-    addToast('Đã cập nhật góc tự học 🌙', 'Mục tiêu và ghi chú ôn tập đã được lưu.');
-    await saveEveningNotesAPI(note);
+    addToast('Đã lưu Sổ tay & Ghi chú tự học ✨', 'Mục tiêu và ghi chú ôn tập đã được lưu thành công.');
+    await saveEveningNotesAPI(cleanNote);
   };
 
   // ==========================================
@@ -387,6 +397,88 @@ export default function App() {
     await createNewWeekAPI(payload);
   };
 
+  // 5. COPY WEEK SCHEDULE (Sao chép lịch giữa các tuần đã tạo sẵn, vd: từ Tuần 1 sang Tuần 2)
+  const handleCopyWeekSchedule = async (
+    sourceWeekId: string,
+    targetWeekId: string,
+    workspaceScope: 'all' | WorkspaceId = 'all',
+    copyNotes: boolean = true
+  ) => {
+    const workspaces: WorkspaceId[] =
+      workspaceScope === 'all' ? ['lan_vy', 'kim_anh'] : [workspaceScope];
+
+    let count = 0;
+    setScheduleData((prev) => {
+      const updatedCells = { ...prev.cells };
+      const updatedNotes = { ...(prev.eveningNotes || {}) };
+
+      workspaces.forEach((ws) => {
+        const srcPrefix = `${ws}_${sourceWeekId}_`;
+        const tgtPrefix = `${ws}_${targetWeekId}_`;
+
+        // Clear target week cells
+        Object.keys(updatedCells).forEach((k) => {
+          if (k.startsWith(tgtPrefix)) delete updatedCells[k];
+        });
+
+        // Copy source week cells
+        (Object.entries(prev.cells) as [string, ScheduleCell][]).forEach(([key, cell]) => {
+          if (key.startsWith(srcPrefix) && cell) {
+            const suffix = key.substring(srcPrefix.length);
+            const newKey = `${tgtPrefix}${suffix}`;
+            updatedCells[newKey] = {
+              ...cell,
+              id: newKey,
+              updatedAt: new Date().toISOString(),
+            };
+            count++;
+          }
+        });
+
+        // Copy evening notes if desired
+        if (copyNotes && prev.eveningNotes) {
+          (Object.entries(prev.eveningNotes) as [string, EveningStudyNotes][]).forEach(([key, note]) => {
+            if (key.startsWith(`${ws}_${sourceWeekId}_`) && note) {
+              const suffix = key.substring(`${ws}_${sourceWeekId}_`.length);
+              const newKey = `${ws}_${targetWeekId}_${suffix}`;
+              updatedNotes[newKey] = {
+                ...note,
+                id: newKey,
+              };
+            }
+          });
+        }
+      });
+
+      const updatedData: FullScheduleData = {
+        ...prev,
+        cells: updatedCells,
+        eveningNotes: updatedNotes,
+        lastSyncedAt: new Date().toISOString(),
+      };
+      saveLocalCachedData(updatedData);
+      saveToSupabase(updatedData);
+      return updatedData;
+    });
+
+    const srcWeekName =
+      scheduleData.weeks.find((w) => w.id === sourceWeekId)?.name || sourceWeekId;
+    const tgtWeekName =
+      scheduleData.weeks.find((w) => w.id === targetWeekId)?.name || targetWeekId;
+
+    addToast(
+      '📋 Sao chép thời khóa biểu thành công!',
+      `Đã sao chép ${count} tiết học từ ${srcWeekName} sang ${tgtWeekName}.`
+    );
+
+    await copyWeekScheduleAPI({
+      sourceWeekId,
+      targetWeekId,
+      targetWorkspaceId: workspaceScope,
+      copyNotes,
+    });
+  };
+
   // Handler: Import full JSON data
   const handleImportData = (imported: FullScheduleData) => {
     setScheduleData(imported);
@@ -415,6 +507,7 @@ export default function App() {
         currentWeekId={scheduleData.currentWeekId}
         onSelectWeek={handleSelectWeek}
         onOpenNewWeekModal={() => setIsNewWeekModalOpen(true)}
+        onOpenCopyWeekModal={() => setIsCopyWeekModalOpen(true)}
         onOpenFullSyncModal={handleTriggerFullSync}
         onOpenGuideModal={() => setIsGuideModalOpen(true)}
         onOpenExportModal={() => setIsGuideModalOpen(true)}
@@ -446,6 +539,10 @@ export default function App() {
             onDeleteCell={handleDeleteCell}
             onSyncSingleCell={handleSyncSingleCell}
             onSyncDayToMe={handleTriggerDaySync}
+            onOpenCopyWeekModal={() => setIsCopyWeekModalOpen(true)}
+            onQuickCopyFromWeek={(sourceWeekId) =>
+              handleCopyWeekSchedule(sourceWeekId, scheduleData.currentWeekId, 'all', true)
+            }
             onSyncSlotToMe={(slotId) => {
               // Quick slot sync to me
               addToast(
@@ -475,6 +572,7 @@ export default function App() {
         <EveningSelfStudySection
           currentWorkspaceId={currentWorkspaceId}
           myIdentity={myIdentity}
+          onChangeIdentity={(id) => setMyIdentity(id)}
           currentWeekId={scheduleData.currentWeekId}
           eveningNotes={scheduleData.eveningNotes}
           onSaveEveningNotes={handleSaveEveningNotes}
@@ -485,7 +583,7 @@ export default function App() {
       <footer className="mt-8 border-t border-rose-100 bg-white/70 py-5 text-center text-xs text-gray-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-base">������</span>
+            <span className="text-base">🌸</span>
             <span className="font-semibold text-gray-700">
               Thời khóa biểu Lan Vy &amp; Kim Ánh
             </span>
@@ -530,6 +628,16 @@ export default function App() {
         totalWeeksCount={scheduleData.weeks.length}
         onClose={() => setIsNewWeekModalOpen(false)}
         onCreateWeek={handleCreateNewWeek}
+      />
+
+      <CopyWeekModal
+        isOpen={isCopyWeekModalOpen}
+        currentWeek={currentWeek}
+        weeks={scheduleData.weeks}
+        cells={scheduleData.cells}
+        currentWorkspaceId={currentWorkspaceId}
+        onClose={() => setIsCopyWeekModalOpen(false)}
+        onConfirmCopy={handleCopyWeekSchedule}
       />
 
       <SyncConfirmModal

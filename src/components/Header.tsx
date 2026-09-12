@@ -9,6 +9,7 @@ import {
   Database,
   Printer,
   RefreshCw,
+  Copy,
 } from 'lucide-react';
 import { WorkspaceId, WeekData } from '../types';
 import { WORKSPACE_USERS } from '../data/scheduleConfig';
@@ -23,6 +24,7 @@ interface HeaderProps {
   currentWeekId: string;
   onSelectWeek: (weekId: string) => void;
   onOpenNewWeekModal: () => void;
+  onOpenCopyWeekModal?: () => void;
   onOpenFullSyncModal: () => void;
   onOpenGuideModal: () => void;
   onOpenExportModal: () => void;
@@ -41,6 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
   currentWeekId,
   onSelectWeek,
   onOpenNewWeekModal,
+  onOpenCopyWeekModal,
   onOpenFullSyncModal,
   onOpenGuideModal,
   onOpenExportModal,
@@ -191,15 +194,28 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            {/* " Tuần mới" Button */}
+            {/* "Tuần mới" Button */}
             <button
               id="btn-add-week"
               onClick={onOpenNewWeekModal}
               className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold text-xs px-3 py-1.5 rounded-xl shadow-xs transition-all hover:scale-102 active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span> Tuần mới</span>
+              <span>Tuần mới</span>
             </button>
+
+            {/* "Chép TKB tuần" Button */}
+            {onOpenCopyWeekModal && (
+              <button
+                id="btn-copy-week"
+                onClick={onOpenCopyWeekModal}
+                className="flex items-center gap-1.5 bg-white hover:bg-purple-50 text-purple-700 hover:text-purple-900 border border-purple-200/90 font-bold text-xs px-3 py-1.5 rounded-xl shadow-2xs transition-all hover:scale-102 active:scale-95"
+                title="Sao chép toàn bộ thời khóa biểu từ một tuần khác sang tuần hiện tại"
+              >
+                <Copy className="w-3.5 h-3.5 text-purple-600" />
+                <span>Chép TKB tuần</span>
+              </button>
+            )}
 
             {/* Live Clock & Status Badge */}
             <div className="hidden md:flex items-center gap-2 bg-white border border-rose-100 rounded-xl px-3 py-1.5 text-xs text-gray-600 shadow-2xs">

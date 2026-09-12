@@ -24,6 +24,8 @@ interface TimetableGridProps {
   onSyncSingleCell: (cellId: string) => void;
   onSyncDayToMe: (dayId: string) => void;
   onSyncSlotToMe: (slotId: string) => void;
+  onOpenCopyWeekModal?: () => void;
+  onQuickCopyFromWeek?: (sourceWeekId: string) => void;
 }
 
 type ShiftFilter = 'all' | 'morning' | 'afternoon' | 'evening';
@@ -38,9 +40,16 @@ export const TimetableGrid: React.FC<TimetableGridProps> = ({
   onDeleteCell,
   onSyncSingleCell,
   onSyncDayToMe,
+  onOpenCopyWeekModal,
+  onQuickCopyFromWeek,
 }) => {
   const isReadOnly = currentWorkspaceId !== myIdentity;
   const myUser = WORKSPACE_USERS[myIdentity];
+
+  // Count cells in current week for this workspace
+  const currentWeekCellsCount = Object.keys(cells).filter((k) =>
+    k.startsWith(`${currentWorkspaceId}_${currentWeekId}_`)
+  ).length;
 
   // Filter state for Khung giờ
   const [shiftFilter, setShiftFilter] = useState<ShiftFilter>('all');
@@ -62,6 +71,44 @@ export const TimetableGrid: React.FC<TimetableGridProps> = ({
 
   return (
     <div className="w-full space-y-3.5 pb-6">
+      {/* Empty Week Quick-Copy Helper Banner */}
+      {currentWeekCellsCount === 0 && (
+        <div className="bg-gradient-to-r from-purple-50 via-pink-50/80 to-amber-50 rounded-2xl border border-purple-200/90 p-3.5 shadow-2xs flex flex-wrap items-center justify-between gap-3 animate-in fade-in">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg shadow-2xs shrink-0">
+              📋
+            </div>
+            <div>
+              <h4 className="font-bold text-xs sm:text-sm text-gray-800">
+                Thời khóa biểu {currentWeek?.name || 'tuần này'} đang để trống
+              </h4>
+              <p className="text-[11px] text-gray-500">
+                Tuần 2 được tạo sẵn chưa có tiết học. Bạn có thể chép nhanh thời khóa biểu từ Tuần 1 sang ngay bây giờ!
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {onQuickCopyFromWeek && (
+              <button
+                onClick={() => onQuickCopyFromWeek('week_1')}
+                className="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-rose-500 hover:from-purple-700 hover:to-rose-600 text-white rounded-xl text-xs font-bold shadow-xs transition-transform hover:scale-102 flex items-center gap-1.5"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                <span>Chép nhanh từ Tuần 1</span>
+              </button>
+            )}
+            {onOpenCopyWeekModal && (
+              <button
+                onClick={onOpenCopyWeekModal}
+                className="px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-semibold shadow-2xs transition-colors"
+              >
+                Chọn tuần khác...
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 1. KHUNG GIỜ FILTER BAR (Matches screenshot!) */}
       <div className="bg-white rounded-2xl border border-rose-200/80 p-2.5 shadow-2xs flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#E11D48] px-2">

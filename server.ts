@@ -87,10 +87,14 @@ async function startServer() {
     if (!note || !note.id) {
       return res.status(400).json({ error: 'Missing note or note.id' });
     }
+    const cleanId = note.id.replace(/_evening$/, '');
+    const cleanNote = { ...note, id: cleanId };
     const data = getScheduleData();
-    data.eveningNotes[note.id] = note;
+    if (!data.eveningNotes) data.eveningNotes = {};
+    data.eveningNotes[cleanId] = cleanNote;
+    data.eveningNotes[`${cleanId}_evening`] = cleanNote;
     saveScheduleData(data);
-    res.json({ success: true, note });
+    res.json({ success: true, note: cleanNote });
   });
 
   // SYNC: Single Cell
@@ -254,6 +258,66 @@ async function startServer() {
 
     saveScheduleData(data);
     res.json({ success: true, newWeek, allWeeks: data.weeks });
+  });
+
+  // COPY WEEK SCHEDULE (e.g. from week_1 to week_2)
+  app.post('/api/schedule/copy-week', (req, res) => {
+    const { sourceWeekId, targetWeekId, targetWorkspaceId, copyNotes } = req.body;
+    if (!sourceWeekId || !targetWeekId) {
+      return res.status(400).json({ error: 'Missing sourceWeekId or targetWeekId' });
+    }
+
+    const data = getScheduleData();
+    let copiedCount = 0;
+
+    const workspacesToAffect =
+      targetWorkspaceId && targetWorkspaceId !== 'all'
+        ? [targetWorkspaceId]
+        : ['lan_vy', 'kim_anh'];
+
+    workspacesToAffect.forEach((ws) => {
+      const tgtPrefix = `${ws}_${targetWeekId}_`;
+      const srcPrefix = `${ws}_${sourceWeekId}_`;
+
+      // Clear existing target week cells
+      Object.keys(data.cells).forEach((k) => {
+        if (k.startsWith(tgtPrefix)) {
+          delete data.cells[k];
+        }
+      });
+
+      // Copy from source week
+      Object.entries(data.cells).forEach(([key, cell]) => {
+        if (key.startsWith(srcPrefix)) {
+          const suffix = key.substring(srcPrefix.length);
+          const newKey = `${tgtPrefix}${suffix}`;
+          data.cells[newKey] = {
+            ...cell,
+            id: newKey,
+            updatedAt: new Date().toISOString(),
+          };
+          copiedCount++;
+        }
+      });
+
+      // Copy evening notes if requested
+      if (copyNotes && data.eveningNotes) {
+        Object.entries(data.eveningNotes).forEach(([key, note]) => {
+          if (key.startsWith(`${ws}_${sourceWeekId}_`)) {
+            const suffix = key.substring(`${ws}_${sourceWeekId}_`.length);
+            const newKey = `${ws}_${targetWeekId}_${suffix}`;
+            data.eveningNotes[newKey] = {
+              ...note,
+              id: newKey,
+            };
+          }
+        });
+      }
+    });
+
+    data.lastSyncedAt = new Date().toISOString();
+    saveScheduleData(data);
+    res.json({ success: true, copiedCount, syncedAt: data.lastSyncedAt });
   });
 
   // RESET TO DEFAULT

@@ -9,6 +9,11 @@ export function sanitizeScheduleData(data: FullScheduleData): FullScheduleData {
   if (!data || !data.weeks) return data;
   let changed = false;
 
+  if (!data.eveningNotes) {
+    data.eveningNotes = {};
+    changed = true;
+  }
+
   const updatedWeeks = data.weeks.map((w) => {
     if (w.id === 'week_1' && (w.name.includes('01/09') || w.startDate === '2026-09-01')) {
       changed = true;
@@ -263,3 +268,27 @@ export async function resetScheduleAPI(): Promise<FullScheduleData | null> {
   }
   return null;
 }
+
+// Copy full schedule from one week to another
+export async function copyWeekScheduleAPI(payload: {
+  sourceWeekId: string;
+  targetWeekId: string;
+  targetWorkspaceId?: string;
+  copyNotes?: boolean;
+}): Promise<number> {
+  try {
+    const res = await fetch('/api/schedule/copy-week', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.copiedCount || 0;
+    }
+  } catch (e) {
+    console.warn('Failed to copy week schedule via API', e);
+  }
+  return 0;
+}
+
